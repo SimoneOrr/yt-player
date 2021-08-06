@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 from selenium import webdriver
@@ -34,15 +34,12 @@ query= url_youtube_search+search
 print("\nGot it! Just a moment...\n")
 
 
-# In[2]:
+# In[ ]:
 
 
 #gain access and extract the information
 def info_to_df(query):
     """accepts terms and conditions and organize the infromation extract into a dataframe"""
-    
-#     options = webdriver.ChromeOptions()
-#     options.add_argument("--start-minimized")
 
     driver=webdriver.Chrome(ChromeDriverManager().install())
     driver.minimize_window()
@@ -50,11 +47,16 @@ def info_to_df(query):
     
     #agree to terms
     time.sleep(1)
-    button=driver.find_elements_by_xpath("//button[@jsname='higCR' and @aria-label='Agree to the use of cookies and other data for the purposes described']")[0]
-    
-    time.sleep(2)
-    button.click()
-
+    try:
+        button=driver.find_elements_by_xpath("//button[@jsname='higCR' and @aria-label='Agree to the use of cookies and other data for the purposes described']")[0]
+        if button!=None:
+            time.sleep(2)
+            button.click()
+        else:
+            pass
+    except:
+        time.sleep(1)
+        pass 
     # get info about the video and the author
     videoTitle=driver.find_elements_by_xpath("//a[@id='video-title']")
     time.sleep(2)
@@ -146,7 +148,6 @@ def info_to_df(query):
 
 
         driver=webdriver.Chrome()
-        driver.minimize_window()
         driver.get(convert_web + youtube.loc[int(row_id), "videoId"])
 
         button_convert=driver.find_element_by_xpath("//button[@id='cvt-btn']")
@@ -240,7 +241,7 @@ def info_to_df(query):
                                 print("downloading {}...\n".format(youtube.loc[int(row), "title"]))
                             elif command=='M':
                                 media.stop()
-                                prin"\n==========WELCOME TO YT-PLAYER=========="
+                                print("\n==========WELCOME TO YT-PLAYER==========")
                                 print(" ")
                                 search= "+".join(input("Hi! What are you looking for?\n\nSEARCH:").split(" "))
                                 query= url_youtube_search+search
@@ -334,6 +335,7 @@ def info_to_df(query):
             print(" ")
             print("downloading {}...\n".format(youtube.loc[int(row), "title"]))
             choice=converter(row)
+            close_process(youtube)
             
         
         break
@@ -342,17 +344,17 @@ def info_to_df(query):
         
 
 
-# In[3]:
+# In[ ]:
 
 
 try:
     info_to_df(query)
 except KeyboardInterrupt:
+    print("See ya!")
     pass
 
 
 # In[ ]:
-
 
 
 
